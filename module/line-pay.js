@@ -12,7 +12,7 @@ const api_version = "v2";
 
 let Error = require("./line-pay-error.js");
 Promise = require("bluebird");
-Promise.promisifyAll(request);
+Promise.promisifyAll(fixieRequest);
 
 /**
 @class
