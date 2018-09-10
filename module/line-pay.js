@@ -6,6 +6,7 @@ const router = require("express").Router();
 const session = require("express-session");
 const debug = require("debug")("line-pay:module");
 const request = require("request");
+const fixieRequest = fixieRequest.defaults({'proxy': process.env.FIXIE_URL});
 const lossless_json = require("lossless-json");
 const api_version = "v2";
 
@@ -176,7 +177,7 @@ class LinePay {
         let url = `https://${this.apiHostname}/${api_version}/payments/request`;
         let body = JSON.stringify(options);
         debug(`Going to reserve payment...`);
-        return request.postAsync({
+        return fixieRequest.postAsync({
             url: url,
             headers: this.headers,
             body: body
@@ -227,7 +228,7 @@ class LinePay {
             currency: options.currency
         })
         debug(`Going to confirm payment of transaction: ${options.transactionId}...`);
-        return request.postAsync({
+        return fixieRequest.postAsync({
             url: url,
             headers: this.headers,
             body: body
@@ -280,7 +281,7 @@ class LinePay {
         delete options.regKey;
         let body = JSON.stringify(options);
         debug(`Going to execute preapproved payment of orderId: ${options.orderId}...`);
-        return request.postAsync({
+        return fixieRequest.postAsync({
             url: url,
             headers: this.headers,
             body: body
@@ -329,7 +330,7 @@ class LinePay {
             url += "?creditCardAuth=true";
         }
         debug(`Going to check availability of preapproved payment for regKey: ${options.regKey}...`);
-        return request.getAsync({
+        return fixieRequest.getAsync({
             url: url,
             headers: this.headers,
             json: true
@@ -372,7 +373,7 @@ class LinePay {
 
         let url = `https://${this.apiHostname}/${api_version}/payments/preapprovedPay/${options.regKey}/expire`;
         debug(`Going to expire of preapproved payment for regKey: ${options.regKey}...`);
-        return request.postAsync({
+        return fixieRequest.postAsync({
             url: url,
             headers: this.headers,
             json: true
@@ -415,7 +416,7 @@ class LinePay {
 
         let url = `https://${this.apiHostname}/${api_version}/payments/authorizations/${options.transactionId}/void`;
         debug(`Going to void of authorized payment for transaction id: ${options.transactionId}...`);
-        return request.postAsync({
+        return fixieRequest.postAsync({
             url: url,
             headers: this.headers,
             json: true
@@ -460,7 +461,7 @@ class LinePay {
         if (options.transactionId) url += `transactionId=${options.transactionId}`;
         if (options.orderId) url += `orderId=${options.orderId}`;
         debug(`Going to inquire authorization...`);
-        return request.getAsync({
+        return fixieRequest.getAsync({
             url: url,
             headers: this.headers
         }).then((response) => {
@@ -511,7 +512,7 @@ class LinePay {
         });
         debug(`Going to capture payment...`);
         delete body.transactionId;
-        return request.postAsync({
+        return fixieRequest.postAsync({
             url: url,
             headers: this.headers,
             body: body
@@ -558,7 +559,7 @@ class LinePay {
         if (options.transactionId) url += `transactionId=${options.transactionId}`;
         if (options.orderId) url += `orderId=${options.orderId}`;
         debug(`Going to inquire payment...`);
-        return request.getAsync({
+        return fixieRequest.getAsync({
             url: url,
             headers: this.headers
         }).then((response) => {
@@ -606,7 +607,7 @@ class LinePay {
             refundAmount: options.refundAmount
         });
         debug(`Going to refund payment...`);
-        return request.postAsync({
+        return fixieRequest.postAsync({
             url: url,
             headers: this.headers,
             body: body
