@@ -6,7 +6,7 @@ const router = require("express").Router();
 const session = require("express-session");
 const debug = require("debug")("line-pay:module");
 const request = require("request");
-const fixieRequest = fixieRequest.defaults({'proxy': process.env.FIXIE_URL});
+const fixieRequest = request.defaults({'proxy': process.env.FIXIE_URL});
 const lossless_json = require("lossless-json");
 const api_version = "v2";
 
